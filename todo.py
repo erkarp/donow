@@ -17,12 +17,17 @@ file = open('todo.txt', 'r')
 todos = file.read().strip().split('\n')
 file.close()
 
-if PERMISSION[arg] == 'w':
-	file = open('todo.txt', 'w')
-	
-	def save_todos(todos):
-		file.write('\n'.join(todos))
-	
+try:
+	if PERMISSION[arg] == 'w':
+		file = open('todo.txt', 'w')
+		
+		def save_todos(todos):
+			file.write('\n'.join(todos))
+except: 
+	print('Invalid argument')
+	sys.exit()
+
+		
 
 
 def print_todos(list):
@@ -35,15 +40,21 @@ def print_todos(list):
 
 		
 if arg == 'add':
-	while True:
-		todo = input('item: ')
+	if len(sys.argv) > 2:
+		for i in range(2, len(sys.argv)):
+			todos.append(sys.argv[i])
 			
-		if todo == '':
-			break
+	else:
+		while True:
+			todo = input('item: ').strip()
 				
-		todos.append(todo)
-			
+			if todo == '':
+				break
+					
+			todos.append(todo)
+				
 	save_todos(todos)
+	print_todos(todos)
 	
 
 elif arg == 'del':
