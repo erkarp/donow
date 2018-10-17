@@ -59,26 +59,24 @@ if arg == 'add':
 				break
 					
 			todos.append(todo)
-				
-	save_todos(todos)
-	print_todos(todos)
 	
 
 elif arg == 'del':
 	arg_todos = get_arg_items()
 	
 	if arg_todos:
+		arg_todos.sort(reverse=True)
+		
 		for todo in arg_todos:
 			try:
-				input = int(todo)
-				del todos[input - 1]
+				del todos[int(todo) - 1]
 				
-			except:
-				print('NaN')
-				sys.exit()
-			
-		save_todos(todos)
-		print_todos(todos)
+			except: 
+				try: 
+					todos.remove(todo)
+				
+				except:
+					print('Invalid argument\n')
 
 	else: 
 		print('No todos selected.')
@@ -86,7 +84,7 @@ elif arg == 'del':
 	
 elif arg == 'clear':
 	if (input('Delete all todos? (y/n)\n') == 'y'):
-		file.write('')
+		save_todos([])
 		
 	
 elif arg == 'view':
@@ -98,4 +96,6 @@ elif arg == 'raw':
 	
 
 if PERMISSION[arg] == 'w':
+	save_todos(todos)
+	print_todos(todos)
 	file.close()
