@@ -14,34 +14,52 @@ PERMISSION = {
 arg = 'view' if len(sys.argv) == 1 else sys.argv[1]
 
 file = open('todo.txt', 'r')
-todos = file.read().split('\n')
+todos = file.read().strip().split('\n')
 file.close()
 
 if PERMISSION[arg] == 'w':
 	file = open('todo.txt', 'w')
 	
+	def save_todos(todos):
+		file.write('\n'.join(todos))
 	
 
 
-def print_items(list):
+def print_todos(list):
+	count = 1
 	for item in list:
-		print(item)
+		if item.isalnum():
+			print(str(count) + '. ' + item)
+			count += 1
+
 
 		
 if arg == 'add':
-	count = len(todos)
-	
 	while True:
-		print('item todo:')
-		todo = input()
+		todo = input('item: ')
 			
 		if todo == '':
 			break
 				
-		todos.append(str(count) + '. ' + todo)
-		count += count
+		todos.append(todo)
 			
-	file.write('\n'.join(todos))
+	save_todos(todos)
+	
+
+elif arg == 'del':
+	if len(sys.argv) > 2:
+		for i in range(2, len(sys.argv)):
+			try:
+				input = int(sys.argv[i])
+				del todos[input - 1]
+				save_todos(todos)
+				print_todos(todos)
+				
+			except:
+				print('NaN')
+
+	else: 
+		print('No todos selected.')
 
 	
 elif arg == 'clear':
@@ -50,7 +68,7 @@ elif arg == 'clear':
 		
 	
 elif arg == 'view':
-	print_items(todos)
+	print_todos(todos)
 	
 	
 elif arg == 'raw':
