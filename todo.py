@@ -23,6 +23,11 @@ try:
 		
 		def save_todos(todos):
 			file.write('\n'.join(todos))
+			
+		def get_arg_items():
+			if len(sys.argv) > 2:
+				return sys.argv[2:]
+		
 except: 
 	print('Invalid argument')
 	sys.exit()
@@ -40,9 +45,11 @@ def print_todos(list):
 
 		
 if arg == 'add':
-	if len(sys.argv) > 2:
-		for i in range(2, len(sys.argv)):
-			todos.append(sys.argv[i])
+	arg_todos = get_arg_items()
+	
+	if arg_todos:
+		for todo in arg_todos:
+			todos.append(todo)
 			
 	else:
 		while True:
@@ -58,16 +65,20 @@ if arg == 'add':
 	
 
 elif arg == 'del':
-	if len(sys.argv) > 2:
-		for i in range(2, len(sys.argv)):
+	arg_todos = get_arg_items()
+	
+	if arg_todos:
+		for todo in arg_todos:
 			try:
-				input = int(sys.argv[i])
+				input = int(todo)
 				del todos[input - 1]
-				save_todos(todos)
-				print_todos(todos)
 				
 			except:
 				print('NaN')
+				sys.exit()
+			
+		save_todos(todos)
+		print_todos(todos)
 
 	else: 
 		print('No todos selected.')
