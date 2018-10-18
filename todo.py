@@ -9,6 +9,7 @@ PERMISSIONS = {
 	'add': 'w',
 	'del': 'w',
 	'edit': 'w',
+	'move': 'w',
 	'view': 'r', 
 	'raw': 'r',
 	'clear': 'w'
@@ -25,7 +26,7 @@ try:
 
 	if PERMISSION == 'w':
 		file = open('todo.txt', 'w')
-		
+
 		def save_todos(todos):
 			file.write('\n'.join(todos))
 			
@@ -83,10 +84,11 @@ elif arg == 'del':
 		arg_todos.sort(reverse=True)
 		
 		for todo in arg_todos:
-			todos.remove(get_todo(todo))
+			if (get_todo(todo)):
+				todos.remove(get_todo(todo))
 
 	else: 
-		print('No todos selected.')
+		print('No todos selected.\n')
 
 
 elif arg == 'edit': 
@@ -104,7 +106,30 @@ elif arg == 'edit':
 		
 	if not success:
 		print('Invalid argument\n')
-	
+
+
+elif arg == 'move':
+	arg_todos = get_arg_items()
+	success = False
+
+	if arg_todos and len(arg_todos) == 2:
+		todo = get_todo(arg_todos[0])
+		
+		if (todo):
+			success = True
+			try: 
+				old_index = todos.index(todo)
+				new_index = int(arg_todos[1]) -1
+
+				del todos[old_index]
+				todos.insert(new_index, todo)
+			
+			except:
+				print('Invalid new index\n')
+
+	if not success:
+		print('Invalid argument\n')
+
 	
 elif arg == 'clear':
 	if (input('Delete all todos? (y/n)\n') == 'y'):
