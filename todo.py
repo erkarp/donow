@@ -91,15 +91,20 @@ elif arg == 'del':
 		print('No todos selected.\n')
 
 
-elif arg == 'edit': 
+elif arg == 'edit':
 	arg_todos = get_arg_items()
 	success = False
 
-	if arg_todos and len(arg_todos) == 2:
+	if arg_todos and 0 < len(arg_todos) < 3:
 		old = get_todo(arg_todos[0])
-		new = arg_todos[1]
 
-		if (old and not new.isspace()):
+		if old:
+			if len(arg_todos) == 2:
+				new = arg_todos[1].strip()
+			else:
+				new = input('edit item: ').strip()
+
+		if new :
 			index = todos.index(old)
 			todos[index] = new
 			success = True
@@ -117,6 +122,7 @@ elif arg == 'move':
 		
 		if (todo):
 			success = True
+
 			try: 
 				old_index = todos.index(todo)
 				new_index = int(arg_todos[1]) -1
