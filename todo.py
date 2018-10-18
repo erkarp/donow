@@ -3,11 +3,14 @@
 
 import sys
 
-PERMISSION = {
+PERMISSION = 'r'
+
+PERMISSIONS = {
 	'add': 'w',
 	'del': 'w',
-	'raw': 'r',
+	'edit': 'w',
 	'view': 'r', 
+	'raw': 'r',
 	'clear': 'w'
 } 
 
@@ -17,8 +20,10 @@ file = open('todo.txt', 'r')
 todos = file.read().strip().split('\n')
 file.close()
 
-try:
-	if PERMISSION[arg] == 'w':
+try: 
+	PERMISSION = PERMISSIONS[arg]
+
+	if PERMISSION == 'w':
 		file = open('todo.txt', 'w')
 		
 		def save_todos(todos):
@@ -27,10 +32,20 @@ try:
 		def get_arg_items():
 			if len(sys.argv) > 2:
 				return sys.argv[2:]
+				
+		def get_todo(todo):
+			try:
+				return todos[int(todo) - 1]
+				
+			except:
+				if todo in todos:
+					return todo
+					
+				else: 
+					print('Invalid argument\n')
 		
 except: 
 	print('Invalid argument')
-	sys.exit()
 
 		
 
@@ -59,7 +74,7 @@ if arg == 'add':
 				break
 					
 			todos.append(todo)
-	
+			
 
 elif arg == 'del':
 	arg_todos = get_arg_items()
@@ -68,23 +83,32 @@ elif arg == 'del':
 		arg_todos.sort(reverse=True)
 		
 		for todo in arg_todos:
-			try:
-				del todos[int(todo) - 1]
-				
-			except: 
-				try: 
-					todos.remove(todo)
-				
-				except:
-					print('Invalid argument\n')
+			todos.remove(get_todo(todo))
 
 	else: 
 		print('No todos selected.')
 
+
+elif arg == 'edit': 
+	arg_todos = get_arg_items()
+	success = False
+
+	if arg_todos and len(arg_todos) == 2:
+		old = get_todo(arg_todos[0])
+		new = arg_todos[1]
+
+		if (old and not new.isspace()):
+			index = todos.index(old)
+			todos[index] = new
+			success = True
+		
+	if not success:
+		print('Invalid argument\n')
+	
 	
 elif arg == 'clear':
 	if (input('Delete all todos? (y/n)\n') == 'y'):
-		save_todos([])
+		todos = []
 		
 	
 elif arg == 'view':
@@ -95,7 +119,7 @@ elif arg == 'raw':
 	print(repr(todos))
 	
 
-if PERMISSION[arg] == 'w':
+if PERMISSION == 'w':
 	save_todos(todos)
 	print_todos(todos)
 	file.close()
