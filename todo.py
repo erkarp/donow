@@ -1,7 +1,7 @@
 #! python3
 # todo.py - cl todos
 
-import sys
+import sys, datetime, time
 
 PERMISSION = 'r'
 
@@ -12,7 +12,8 @@ PERMISSIONS = {
 	'move': 'w',
 	'view': 'r', 
 	'raw': 'r',
-	'clear': 'w'
+	'clear': 'w', 
+	'backup': 'r'
 } 
 
 arg = 'view' if len(sys.argv) == 1 else sys.argv[1]
@@ -26,9 +27,6 @@ try:
 
 	if PERMISSION == 'w':
 		file = open('todo.txt', 'w')
-
-		def save_todos(todos):
-			file.write('\n'.join(todos))
 			
 		def get_arg_items():
 			if len(sys.argv) > 2:
@@ -48,15 +46,17 @@ try:
 except: 
 	print('Invalid argument')
 
-		
+
+
+def save_todos(todos, file=file):
+	file.write('\n'.join(todos) + '\n')
 
 
 def print_todos(list):
 	count = 1
 	for item in list:
-		if item.isalnum():
-			print(str(count) + '. ' + item)
-			count += 1
+		print(str(count) + '. ' + item)
+		count += 1
 
 
 		
@@ -148,6 +148,16 @@ elif arg == 'view':
 	
 elif arg == 'raw':
 	print(repr(todos))
+
+
+elif arg == 'backup':
+	timestamp = datetime.datetime.now()
+	timestamp = timestamp.strftime('%Y-%m-%d__%I.%M.%S%p')
+	filename = 'backup_todo_' + timestamp + '.txt'
+
+	todo_backup = open(filename, 'w')
+	save_todos(todos, todo_backup)
+	todo_backup.close()
 	
 
 if PERMISSION == 'w':
